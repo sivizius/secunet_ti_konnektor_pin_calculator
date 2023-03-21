@@ -100,15 +100,19 @@ impl Pin {
 
 impl Display for Pin {
   fn fmt(&self, formatter: &mut Formatter) -> FormatResult {
-    write!(formatter, "{:02x?}:", self.0)?;
-    self.0.iter().skip(1).take(Self::DIGIT_PAIRS)
-    .try_for_each(
-      |digit_pair|
-      write!(
-        formatter,
-        " {:x} {:x}",
-        digit_pair >> 4,
-        digit_pair & 0x0f,
+    write!(formatter, "{:02x?}:", self.0)
+    .and_then
+    (
+      |_|
+      self.0.iter().skip(1).take(Self::DIGIT_PAIRS)
+      .try_for_each(
+        |digit_pair|
+        write!(
+          formatter,
+          " {:x} {:x}",
+          digit_pair >> 4,
+          digit_pair & 0x0f,
+        )
       )
     )
   }
